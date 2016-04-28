@@ -1,0 +1,1 @@
+"./Practica_4-PAE.obj" "./comunication.obj" "./hal_lcd.obj" "./init.obj" "./motor.obj" "./sensor.obj" "../lnk_msp430f5438a.cmd" -l"libc.a" -l"libmath.a" 
