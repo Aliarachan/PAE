@@ -37,24 +37,31 @@ void moveWheel(byte ID, byte low, byte high){
 }
 
 /**
+* Funció que configura els motors en mode continu per tal de poder moure les rodes només indicant la velocitat.
+* Demana per escriure un 0 en tots els registres de configuració dels angles limit de tots el moduls Dynamixel connectats.
 **/
 void endLessTurn(void){
 	byte bID = BROADCASTING_ID; // Amb aquesta id els packets enviats s'aplicaran a totes les unitats de Dynamixel. I no es retornarà cap Status Packet.
 	byte bInstruction = INST_WRITE; //instruction write
-	byte bParameterLength = 5; // Número de paràmetres
+	byte bParameterLength = 5; // Número de paràmetres (Direcció del 1r registre on escriure, 0 per a tots el registres de configuracio dels angles limit (4))
 	byte gbpParameter[20];
 	//The wheel mode can be used to wheel-type operation robots since motors of the robots spin infinitely.
 	gbpParameter[0] = P_CW_ANGLE_LIMIT_L;
-	gbpParameter[1] = 0;
-	gbpParameter[2] = 0;
-	gbpParameter[3] = 0;
-	gbpParameter[4] = 0;
+	gbpParameter[1] = 0; // Dada a escruiure a P_CW_ANGLE_LIMIT_L 
+	gbpParameter[2] = 0; // Dada a escruiure a P_CW_ANGLE_LIMIT_H 
+	gbpParameter[3] = 0; // Dada a escriure a  P_CW_ANGLE_LIMIT_L
+	gbpParameter[4] = 0; // Dada a escriure a  P_CCW_ANGLE_LIMIT_H
 	TxPacket(bID, bParameterLength, gbpParameter, bInstruction);
 	//RxPacket();
 
 
 }
 
+/**
+* Funció NO ACABADA que configura la velocitat dels motors per tal de que el robot es mogui cap a endavant.
+* Demana per escriure la velocitat corresponent als registres de configuració de la velocitat a cadascun del moduls Dynamixel motor.
+* En compte d'enviar a cada motor individualment es preten escriure a tots a la vegada per tal de que es comencin a moure simultaneament. 
+**/
 void walk(void){
 	byte bID = BROADCASTING_ID; // a més d'un actuador
 	byte bInstruction = INST_SYNC_WRITE; //instruction write sincrona, una unica instrucció per a més d'un motor
@@ -73,6 +80,11 @@ void walk(void){
 	TxPacket(bID, bParameterLength, gbpParameter, bInstruction);
 }
 
+/**
+* Funció NO ACABADA que configura la velocitat dels motors per tal de que el robot s'aturi.
+* Demana per escriure velocitat 0 als registres de configuració de la velocitat a cadascun del moduls Dynamixel motor.
+* En comptes d'enviar a cada motors individualment es preten escriure a tots a la vegada per tal de que es comencin a moure simultaneament. 
+**/
 void quiet(void){
 	byte bID = BROADCASTING_ID; // a més d'un actuador
 	byte bInstruction = INST_SYNC_WRITE; //instruction write sincrona, una unica instrucció per a més d'un motor
@@ -92,6 +104,10 @@ void quiet(void){
 
 }
 
+/**
+* Funció que envia a cadascuna de les rodes la velocitat adient per a que el robot es mogui cap enrerre.
+* Rep com a parametre el temps que es vol que el robot es mogui cap enrere.
+**/
 void moveBackward(int time){
 	moveWheel(1, 0xFF, 0x00);
 	moveWheel(2, 0xFF, 0x00);
@@ -103,6 +119,10 @@ void moveBackward(int time){
 	}
 }
 
+/**
+* Funció que envia a cadascuna de les rodes la velocitat adient per a que el robot es mogui cap endavant.
+* Rep com a parametre el temps que es vol que el robot es mogui cap endavant.
+**/
 void moveForward(int time){
 	timeMove = 0;
 	moveWheel(1, 0xFF, 0x04);
