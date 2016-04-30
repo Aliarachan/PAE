@@ -1,14 +1,14 @@
 /*
  * motor.h
- *
+ * Fitxer capçalera de definició de les funcions que utilitzen l'enviament i recepció de paquets dels 4 moduls motors. ( Dynamixel AX-12).
  *  Created on: 28/04/2016
- *      Author: mat.aules
+ *      Author: Aina Ferrà i Alicia Morales
  */
 
 #ifndef MOTOR_H_
 #define MOTOR_H_
 
-extern int timeMove;
+extern int timeMove; // Variable comptador del temps que s'ha mogut en una determinada direcció, s'incrementa a la interrupció del timer B0 i s'usa a les funcions dels motors.
 
 
 /*-------------------------------------------------------------------------

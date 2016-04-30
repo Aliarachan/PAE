@@ -1,7 +1,7 @@
 /*
  * Practica4.c
  *
- * PAE Practica 4: CONNEXIÓ AL ROBOT. Creació de les Funcions Bàsiques de Comunicaciói d'una Llibreria de Funcions per Controlar el Robot.
+ * PAE Practica 4: CONNEXIÓ AL ROBOT. Creació de les Funcions Bàsiques de Comunicació i d'una Llibreria de Funcions per Controlar el Robot.
  *
  *  Created on: 31/03/2016
  *      Author: Aina Ferra i Alicia Morales
@@ -18,8 +18,6 @@
 #include "definedValues.h"
 
 
-//int timeNow = 0; // Comptador de time
-//int timeMove = 0;
 
 /**
  * Funció que apaga el led del motor amb l'ID passat com a paràmetre.
@@ -54,6 +52,8 @@ void ledON(byte bID){
 void main(void) {
 	int f;
 	WDTCTL = WDTPW + WDTHOLD;       	// Paramos el watchdog timer
+	
+	/*Inicialitzem tot el necessari*/
 	init_UCS();
 	init_UART();
 	init_timer_A1();
@@ -61,11 +61,13 @@ void main(void) {
 	enableInterruptTimerB0();
  	_enable_interrupt();
 
- 	__delay_cycles(1000000);
-	endLessTurn();
+
+ 	__delay_cycles(1000000); // Donem un poc de temps d'espera a que tot s'hagi inicialitzat correctament
+	endLessTurn(); // Settejem les rodes en mode continu
 	__delay_cycles(1000000);
 
 	while(1){
+		// Com a mostra de tot l'implementat a la pràctica executem la funció que fa avançar el robot cap endavant evitant tot obstacle.
 		moveObstacle();
 	}
 

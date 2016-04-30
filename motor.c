@@ -1,6 +1,6 @@
 /*
  * motor.c
- *
+ * Fitxer que inclou les funcions relacionades amb l'enviament i recepció de paquets als moduls motors  Dynamixel AX-12. Per tal de configurar el mode de gir de les rodes.
  *  Created on: 28/04/2016
  *      Author: mat.aules
  */
@@ -12,25 +12,32 @@
 #include "definedValues.h"
 #include "sensor.h"
 
-int timeMove = 0;
+int timeMove = 0; // Variable comptador del temps que s'ha estat movent el robot cap a una determinada direcció.
 
+
+/**
+* Funció que mou una roda.
+* Rep l'ID del motor de la roda que es preten moure i la velocitat (conté el sentit).
+* Demana per escriure al registre indicador de velocitat del motor i rep el paquet de resposta.
+**/
 void moveWheel(byte ID, byte low, byte high){
-	RxReturn rx;
+	RxReturn rx; // Paquet de retorn
 	byte bID = ID; //Motor ID
 	byte bInstruction = INST_WRITE; //instruction write
-	byte bParameterLength = 3;
+	byte bParameterLength = 3; // Registre on escriure , Velocitat part baixa , Velocitat part baixa
 	byte gbpParameter[20];
 	gbpParameter[0] = P_GOAL_SPEED_L; //moving speed
 	gbpParameter[1] = low;
 	gbpParameter[2] = high;
-	TxPacket(bID, bParameterLength, gbpParameter, bInstruction);
-	rx = RxPacket();
-	if (rx.error & 0x01)
+	TxPacket(bID, bParameterLength, gbpParameter, bInstruction); // Petició d'enviament
+	rx = RxPacket(); // Recepció
+	if (rx.error & 0x01) // Comprovem l'error
 		_nop();
 
 }
 
-
+/**
+**/
 void endLessTurn(void){
 	byte bID = BROADCASTING_ID; // Amb aquesta id els packets enviats s'aplicaran a totes les unitats de Dynamixel. I no es retornarà cap Status Packet.
 	byte bInstruction = INST_WRITE; //instruction write

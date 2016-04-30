@@ -1,8 +1,8 @@
 /*
  * sensor.h
- *
+ * Fitxer capcalera de les funcions que demanen per les dades del sensor.
  *  Created on: 28/04/2016
- *      Author: mat.aules
+ *      Author: Aina Ferrà i Alicia Morales.
  */
 
 #ifndef SENSOR_H_
