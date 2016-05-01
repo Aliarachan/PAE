@@ -1,6 +1,6 @@
 /*
  * init.h
- *
+ *	Fitxer capcalera de definició de les funcions d'inicialització dels sistemes de comunicació i timeres.
  *  Created on: 28/04/2016
  *      Author: mat.aules
  */

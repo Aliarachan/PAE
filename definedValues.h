@@ -1,8 +1,8 @@
 /*
  * definedValues.h
- *
+ *	Fitxer de definició de constants comunes a la majoria de fitxers.
  *  Created on: 28/04/2016
- *      Author: mat.aules
+ *      Author: Aina Ferrà i Alicia Morales
  */
 
 #ifndef DEFINEDVALUES_H_

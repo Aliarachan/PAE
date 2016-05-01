@@ -1,14 +1,16 @@
 /*
  * comunication.h
- *
+ *	Fitxer capcalera de definició de les funcions de comunicació del robot.
  *  Created on: 28/04/2016
- *      Author: mat.aules
+ *      Author: Aina Ferrà i Alicia Morales
  */
 
 #ifndef COMUNICATION_H_
 #define COMUNICATION_H_
 
 typedef unsigned char byte;
+
+//Variables comunes 
 extern byte readDataUART;
 extern byte receivedByte;
 extern int timeNow;

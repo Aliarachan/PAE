@@ -1,8 +1,8 @@
 /*
  * init.c
- *
+ * Fitxer amb les funcions d'inicialització dels moduls de comunicació i timers.
  *  Created on: 28/04/2016
- *      Author: mat.aules
+ *      Author: Aina Ferra i Alicia Morales
  */
 
 #include <msp430x54xA.h>
@@ -11,6 +11,11 @@
 #include "hal_lcd.h"
 #include "definedValues.h"
 
+/**
+* Funció d'inicialització del UCS.
+* Setteja el SMCLK i el MCLK a 16MHZ i el ACLK a 2^5 Hz i configura el pins 11.0,11.1 i 11.2 com a sortida de test.
+* 
+**/
 void init_UCS(void) {
 	//inicialització de les freqüències de rellotge del microcontrolador
 	unsigned long DCORSEL = DCORSEL_7; //DCORSEL_7 selecciona rango de DCO de 8.5 a 19.6 MHz
@@ -28,6 +33,9 @@ void init_UCS(void) {
 	P11SEL = 0x07; //ACLK, MCLK y SMCLK; activem els pins de test
 }
 
+/**
+* Funció de configuració de l'USCI en mode UART.
+**/
 void init_UART(void) {
 
 	UCA0CTL1 |= UCSWRST; //Fem un reset de la USCI i es desactiva
@@ -55,6 +63,9 @@ void init_UART(void) {
 
 }
 
+/**
+ * Funció d'inicialització del timer A1 per tal de que provoqui una interrupció cada 10 microsegons
+**/
 void init_timer_A1(void) {
 	TA1CTL &= 0x0000; //Inicialitzem tots els bits a 0
 	TA1CTL |= MC_1; //Mode de treballar up MC 01
@@ -67,6 +78,9 @@ void init_timer_A1(void) {
 	TA1CCR0 = 1600; //Cada 10 microsegons
 }
 
+/**
+ * Funció d'inicialització del timer B0 per tal de que provoqui una interrupció cada 100 microsegons
+**/
 void init_timer_B0(void) {
 	TB0CTL &= 0x0000; //Inicialitzem tots els bits a 0
 	TB0CTL |= MC_1; //Mode de treballar up MC 01

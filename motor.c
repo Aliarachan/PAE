@@ -1,6 +1,7 @@
 /*
  * motor.c
- * Fitxer que inclou les funcions relacionades amb l'enviament i recepció de paquets als moduls motors  Dynamixel AX-12. Per tal de configurar el mode de gir de les rodes.
+ * Fitxer que inclou les funcions relacionades amb l'enviament i recepció de paquets als moduls motors Dynamixel AX-12
+ * per tal d'ajustar el mode de gir de les rodes.
  *  Created on: 28/04/2016
  *      Author: mat.aules
  */
@@ -37,11 +38,11 @@ void moveWheel(byte ID, byte low, byte high){
 }
 
 /**
-* Funció que configura els motors en mode continu per tal de poder moure les rodes només indicant la velocitat.
+* Funció que estableix els motors en mode continu per tal de poder moure les rodes només indicant la velocitat objectiu.
 * Demana per escriure un 0 en tots els registres de configuració dels angles limit de tots el moduls Dynamixel connectats.
 **/
 void endLessTurn(void){
-	byte bID = BROADCASTING_ID; // Amb aquesta id els packets enviats s'aplicaran a totes les unitats de Dynamixel. I no es retornarà cap Status Packet.
+	byte bID = BROADCASTING_ID; // Amb aquesta id els packets enviats s'aplicaran a totes les unitats de Dynamixel. No es retornarà cap Status Packet.
 	byte bInstruction = INST_WRITE; //instruction write
 	byte bParameterLength = 5; // Número de paràmetres (Direcció del 1r registre on escriure, 0 per a tots el registres de configuracio dels angles limit (4))
 	byte gbpParameter[20];
@@ -60,7 +61,7 @@ void endLessTurn(void){
 /**
 * Funció NO ACABADA que configura la velocitat dels motors per tal de que el robot es mogui cap a endavant.
 * Demana per escriure la velocitat corresponent als registres de configuració de la velocitat a cadascun del moduls Dynamixel motor.
-* En compte d'enviar a cada motor individualment es preten escriure a tots a la vegada per tal de que es comencin a moure simultaneament. 
+* En comptes d'enviar a cada motor individualment es preten escriure a tots a la vegada per tal de que es comencin a moure simultaneament. 
 **/
 void walk(void){
 	byte bID = BROADCASTING_ID; // a més d'un actuador
@@ -83,7 +84,7 @@ void walk(void){
 /**
 * Funció NO ACABADA que configura la velocitat dels motors per tal de que el robot s'aturi.
 * Demana per escriure velocitat 0 als registres de configuració de la velocitat a cadascun del moduls Dynamixel motor.
-* En comptes d'enviar a cada motors individualment es preten escriure a tots a la vegada per tal de que es comencin a moure simultaneament. 
+* En comptes d'enviar a cada motor individualment es preten escriure a tots a la vegada per tal de que s'aturin simultaneament. 
 **/
 void quiet(void){
 	byte bID = BROADCASTING_ID; // a més d'un actuador
@@ -105,7 +106,7 @@ void quiet(void){
 }
 
 /**
-* Funció que envia a cadascuna de les rodes la velocitat adient per a que el robot es mogui cap enrerre.
+* Funció que envia a cadascuna de les rodes la velocitat adient per tal de que el robot es mogui cap enrerre.
 * Rep com a parametre el temps que es vol que el robot es mogui cap enrere.
 **/
 void moveBackward(int time){
@@ -114,7 +115,7 @@ void moveBackward(int time){
 	moveWheel(3, 0xFF, 0x04);
 	moveWheel(4, 0xFF, 0x04);
 	if (time != 0){
-		timeMove = 0;
+		timeMove = 0; // Variable externa que modifica el timer.
 		while (timeMove <= time);
 	}
 }
@@ -136,6 +137,10 @@ void moveForward(int time){
 
 }
 
+/**
+* Funció que envia a cadascuna de les rodes la velocitat adient per a que el robot es mogui cap a la dreta.
+* Rep com a parametre el temps que es vol que el robot es mogui cap a la dreta.
+**/
 void turnRight(int time){
 	moveWheel(1, 0xFF, 0x00);
 	moveWheel(2, 0xFF, 0x00);
@@ -147,6 +152,10 @@ void turnRight(int time){
 	}
 }
 
+/**
+* Funció que envia a cadascuna de les rodes la velocitat adient per a que el robot es mogui cap a l'esquerra.
+* Rep com a parametre el temps que es vol que el robot es mogui cap a l'esquerra.
+**/
 void turnLeft(int time){
 	moveWheel(1, 0xFF, 0x04);
 	moveWheel(2, 0xFF, 0x04);
@@ -158,6 +167,10 @@ void turnLeft(int time){
 	}
 }
 
+/**
+* Funció que envia a cadascuna de les rodes la velocitat adient per a que el robot s'aturi.
+* Rep com a parametre el temps que es vol que el robot s'aturi.
+**/
 void stopMoving(){
 	moveWheel(1, 0x00, 0x00);
 	moveWheel(2, 0x00, 0x00);
@@ -165,21 +178,25 @@ void stopMoving(){
 	moveWheel(4, 0x00, 0x00);
 }
 
+/**
+* Funció fa moure el robot cap endavant sempre que no s'hagi detectat cap obstacle. En cas de detectar quelcom gira a pertinentment. 
+**/
 void moveObstacle(){
 	int f;
-	f = obstacleDetected();
+	f = obstacleDetected(); // Hi ha obstacle, on?
+
 	switch(f){
-	case (LEFT):
-		turnRight(0);
-		break;
-	case (FRONT):
-		moveBackward(0);
-		break;
-	case (RIGHT):
-		turnLeft(0);
-		break;
-	default:
-		moveForward(0);
+		case (LEFT):
+			turnRight(0);
+			break;
+		case (FRONT):
+			moveBackward(0);
+			break;
+		case (RIGHT):
+			turnLeft(0);
+			break;
+		default:
+			moveForward(0);
 	}
 
 }
