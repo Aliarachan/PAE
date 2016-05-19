@@ -104,3 +104,33 @@ __interrupt void timerA1_ISR(void) {
 __interrupt void timerB0_ISR(void) {
 	timeMove += 1;
 }
+
+#pragma vector=PORT2_VECTOR  //interrupción de los botones. Actualiza el valor de la variable global estado.
+__interrupt void Port2_ISR(void)
+{
+	P2IE &= 0xC0; 	//interrupciones botones S1 y S2 (P2.6 y P2.7) desactivadas
+	P2IE &= 0x3E;   //interrupciones joystick (2.1-2.5) desactivadas
+	switch(P2IFG){
+		case (BUTTONS1):
+		break;
+		case (BUTTONS2):
+		break;
+		case (JOYSTICK_CENTER):
+		break;
+		case (JOYSTICK_LEFT):
+		break;
+		case (JOYSTICK_RIGHT):
+		break;
+		case (JOYSTICK_UP)://Joystick up
+		break;
+		case (JOYSTICK_DOWN):
+		break;
+		default:
+		break;
+	}
+
+	P2IFG = 0;		//limpiamos todas las interrupciones
+	P2IE |= 0xC0; 	//interrupciones botones S1 y S2 (P2.6 y P2.7) reactivadas
+	P2IE |= 0x3E;  //interrupciones joystick (2.1-2.5) reactivadas
+ return;
+}

@@ -1,8 +1,8 @@
 /*
  * definedValues.h
- *	Fitxer de definició de constants comunes a la majoria de fitxers.
+ *	Fitxer de definiciï¿½ de constants comunes a la majoria de fitxers.
  *  Created on: 28/04/2016
- *      Author: Aina Ferrà i Alicia Morales
+ *      Author: Aina Ferrï¿½ i Alicia Morales
  */
 
 #ifndef DEFINEDVALUES_H_
@@ -45,6 +45,17 @@
 #define FRONT_RIGHT 6
 #define LEFT_FRONT_RIGHT 7
 #define ERROR -2
+
+//--- Botons i joystick ---
+#define BUTTONS1 0x40
+#define BUTTONS2 0x80
+#define JOYSTICK_CENTER 0x08
+#define JOYSTICK_LEFT 0x02
+#define JOYSTICK_RIGHT 0x04
+#define JOYSTICK_UP 0x10
+#define JOYSTICK_DOWN 0x20
+
+
 
 #define TXD0_READY (UCA0IFG & UCTXIFG)
 #define RXD0_READY (UCA0IFG & UCRXIFG)
