@@ -11,6 +11,7 @@ comunication.obj: c:/ti/ccsv6/tools/compiler/ti-cgt-msp430_4.4.1/include/stdarg.
 comunication.obj: c:/ti/ccsv6/tools/compiler/ti-cgt-msp430_4.4.1/include/stdlib.h
 comunication.obj: ../hal_lcd.h
 comunication.obj: ../definedValues.h
+comunication.obj: ../init.h
 
 ../comunication.c: 
 c:/ti/ccsv6/ccs_base/msp430/include/msp430x54xA.h: 
@@ -23,3 +24,4 @@ c:/ti/ccsv6/tools/compiler/ti-cgt-msp430_4.4.1/include/stdarg.h:
 c:/ti/ccsv6/tools/compiler/ti-cgt-msp430_4.4.1/include/stdlib.h: 
 ../hal_lcd.h: 
 ../definedValues.h: 
+../init.h: 

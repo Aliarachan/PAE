@@ -1,6 +1,6 @@
 /*
  * motor.c
- * Fitxer que inclou les funcions relacionades amb l'enviament i recepció de paquets als moduls motors Dynamixel AX-12
+ * Fitxer que inclou les funcions relacionades amb l'enviament i recepciï¿½ de paquets als moduls motors Dynamixel AX-12
  * per tal d'ajustar el mode de gir de les rodes.
  *  Created on: 28/04/2016
  *      Author: mat.aules
@@ -13,16 +13,17 @@
 #include "definedValues.h"
 #include "sensor.h"
 
-int timeMove = 0; // Variable comptador del temps que s'ha estat movent el robot cap a una determinada direcció.
-
+int timeMove = 0; // Variable comptador del temps que s'ha estat movent el robot cap a una determinada direccio.
+char closed = 0;
 
 /**
-* Funció que mou una roda.
-* Rep l'ID del motor de la roda que es preten moure i la velocitat (conté el sentit).
+* Funcio que mou una roda.
+* Rep l'ID del motor de la roda que es preten moure i la velocitat (conte el sentit).
 * Demana per escriure al registre indicador de velocitat del motor i rep el paquet de resposta.
 **/
 void moveWheel(byte ID, byte low, byte high){
 	RxReturn rx; // Paquet de retorn
+	char error = 1;
 	byte bID = ID; //Motor ID
 	byte bInstruction = INST_WRITE; //instruction write
 	byte bParameterLength = 3; // Registre on escriure , Velocitat part baixa , Velocitat part baixa
@@ -30,21 +31,21 @@ void moveWheel(byte ID, byte low, byte high){
 	gbpParameter[0] = P_GOAL_SPEED_L; //moving speed
 	gbpParameter[1] = low;
 	gbpParameter[2] = high;
-	TxPacket(bID, bParameterLength, gbpParameter, bInstruction); // Petició d'enviament
-	rx = RxPacket(); // Recepció
-	if (rx.error & 0x01) // Comprovem l'error
-		_nop();
-
+	while(error){
+		TxPacket(bID, bParameterLength, gbpParameter, bInstruction); // Peticio d'enviament
+		rx = RxPacket(); // Recepcio
+		error = rx.receivedError ;
+	}
 }
 
 /**
-* Funció que estableix els motors en mode continu per tal de poder moure les rodes només indicant la velocitat objectiu.
-* Demana per escriure un 0 en tots els registres de configuració dels angles limit de tots el moduls Dynamixel connectats.
+* Funcio que estableix els motors en mode continu per tal de poder moure les rodes nomes indicant la velocitat objectiu.
+* Demana per escriure un 0 en tots els registres de configuracio dels angles limit de tots el moduls Dynamixel connectats.
 **/
 void endLessTurn(void){
-	byte bID = BROADCASTING_ID; // Amb aquesta id els packets enviats s'aplicaran a totes les unitats de Dynamixel. No es retornarà cap Status Packet.
+	byte bID = BROADCASTING_ID; // Amb aquesta id els packets enviats s'aplicaran a totes les unitats de Dynamixel. No es retornara cap Status Packet.
 	byte bInstruction = INST_WRITE; //instruction write
-	byte bParameterLength = 5; // Número de paràmetres (Direcció del 1r registre on escriure, 0 per a tots el registres de configuracio dels angles limit (4))
+	byte bParameterLength = 5; // Numero de parametres (Direccio del 1r registre on escriure, 0 per a tots el registres de configuracio dels angles limit (4))
 	byte gbpParameter[20];
 	//The wheel mode can be used to wheel-type operation robots since motors of the robots spin infinitely.
 	gbpParameter[0] = P_CW_ANGLE_LIMIT_L;
@@ -59,13 +60,13 @@ void endLessTurn(void){
 }
 
 /**
-* Funció NO ACABADA que configura la velocitat dels motors per tal de que el robot es mogui cap a endavant.
-* Demana per escriure la velocitat corresponent als registres de configuració de la velocitat a cadascun del moduls Dynamixel motor.
+* FunciÃ³ NO ACABADA que configura la velocitat dels motors per tal de que el robot es mogui cap a endavant.
+* Demana per escriure la velocitat corresponent als registres de configuracio de la velocitat a cadascun del moduls Dynamixel motor.
 * En comptes d'enviar a cada motor individualment es preten escriure a tots a la vegada per tal de que es comencin a moure simultaneament. 
 **/
 void walk(void){
-	byte bID = BROADCASTING_ID; // a més d'un actuador
-	byte bInstruction = INST_SYNC_WRITE; //instruction write sincrona, una unica instrucció per a més d'un motor
+	byte bID = BROADCASTING_ID; // a mes d'un actuador
+	byte bInstruction = INST_SYNC_WRITE; //instruction write sincrona, una unica instruccio per a mes d'un motor
 	byte bParameterLength = 16; // (L + 1) * N + 4 (L: Data length for each Dynamixel actuator, N: The number of Dynamixel actuators)
 	byte gbpParameter[20];
 	gbpParameter[0] = P_GOAL_SPEED_L ;
@@ -82,13 +83,13 @@ void walk(void){
 }
 
 /**
-* Funció NO ACABADA que configura la velocitat dels motors per tal de que el robot s'aturi.
-* Demana per escriure velocitat 0 als registres de configuració de la velocitat a cadascun del moduls Dynamixel motor.
+* FunciÃ³ NO ACABADA que configura la velocitat dels motors per tal de que el robot s'aturi.
+* Demana per escriure velocitat 0 als registres de configuraciï¿½ de la velocitat a cadascun del moduls Dynamixel motor.
 * En comptes d'enviar a cada motor individualment es preten escriure a tots a la vegada per tal de que s'aturin simultaneament. 
 **/
 void quiet(void){
-	byte bID = BROADCASTING_ID; // a més d'un actuador
-	byte bInstruction = INST_SYNC_WRITE; //instruction write sincrona, una unica instrucció per a més d'un motor
+	byte bID = BROADCASTING_ID; // a mï¿½s d'un actuador
+	byte bInstruction = INST_SYNC_WRITE; //instruction write sincrona, una unica instrucciï¿½ per a mï¿½s d'un motor
 	byte bParameterLength = 16; // (L + 1) * N + 4 (L: Data length for each Dynamixel actuator, N: The number of Dynamixel actuators)
 	byte gbpParameter[20];
 	gbpParameter[0] = P_GOAL_SPEED_L;
@@ -106,7 +107,7 @@ void quiet(void){
 }
 
 /**
-* Funció que envia a cadascuna de les rodes la velocitat adient per tal de que el robot es mogui cap enrerre.
+* Funcio que envia a cadascuna de les rodes la velocitat adient per tal de que el robot es mogui cap enrerre.
 * Rep com a parametre el temps que es vol que el robot es mogui cap enrere.
 **/
 void moveBackward(int time){
@@ -121,7 +122,7 @@ void moveBackward(int time){
 }
 
 /**
-* Funció que envia a cadascuna de les rodes la velocitat adient per a que el robot es mogui cap endavant.
+* Funcio que envia a cadascuna de les rodes la velocitat adient per a que el robot es mogui cap endavant.
 * Rep com a parametre el temps que es vol que el robot es mogui cap endavant.
 **/
 void moveForward(int time){
@@ -138,13 +139,13 @@ void moveForward(int time){
 }
 
 /**
-* Funció que envia a cadascuna de les rodes la velocitat adient per a que el robot es mogui cap a la dreta.
+* Funcio que envia a cadascuna de les rodes la velocitat adient per a que el robot es mogui cap a la dreta.
 * Rep com a parametre el temps que es vol que el robot es mogui cap a la dreta.
 **/
 void turnRight(int time){
-	moveWheel(1, 0xFF, 0x00);
+	moveWheel(1, 0xFF, 0x00); // Rodes de la dreta cap endavant
 	moveWheel(2, 0xFF, 0x00);
-	moveWheel(3, 0xFF, 0x00);
+	moveWheel(3, 0xFF, 0x00); // Rodes de l'esquerra cap endarrera
 	moveWheel(4, 0xFF, 0x00);
 	if (time != 0){
 		timeMove = 0;
@@ -153,7 +154,7 @@ void turnRight(int time){
 }
 
 /**
-* Funció que envia a cadascuna de les rodes la velocitat adient per a que el robot es mogui cap a l'esquerra.
+* Funcio que envia a cadascuna de les rodes la velocitat adient per a que el robot es mogui cap a l'esquerra.
 * Rep com a parametre el temps que es vol que el robot es mogui cap a l'esquerra.
 **/
 void turnLeft(int time){
@@ -166,9 +167,37 @@ void turnLeft(int time){
 		while (timeMove <= time);
 	}
 }
+/**
+* Funcio que envia a cadascuna de les rodes la velocitat adient per a que el robot es mogui cap a la dreta sense moure's endavant.
+* Rep com a parametre el temps que es vol que el robot es mogui cap a la dreta.
+**/
+void turnHRight(int time){
+	moveWheel(1, 0x00, 0x00);
+	moveWheel(2, 0x00, 0x00);
+	moveWheel(3, 0xFF, 0x03);
+	moveWheel(4, 0xFF, 0x03);
+	if (time != 0){
+		timeMove = 0;
+		while (timeMove <= time);
+	}
+}
 
 /**
-* Funció que envia a cadascuna de les rodes la velocitat adient per a que el robot s'aturi.
+* Funcio que envia a cadascuna de les rodes la velocitat adient per a que el robot es mogui cap a l'esquerra sense moure's endavant.
+* Rep com a parametre el temps que es vol que el robot es mogui cap a l'esquerra.
+**/
+void turnHLeft(int time){
+	moveWheel(1, 0xFF, 0x07);
+	moveWheel(2, 0xFF, 0x07);
+	moveWheel(4, 0x00, 0x00);
+	moveWheel(3, 0x00, 0x00);
+	if (time != 0){
+		timeMove = 0;
+		while (timeMove <= time);
+	}
+}
+/**
+* Funcio que envia a cadascuna de les rodes la velocitat adient per a que el robot s'aturi.
 * Rep com a parametre el temps que es vol que el robot s'aturi.
 **/
 void stopMoving(){
@@ -179,7 +208,7 @@ void stopMoving(){
 }
 
 /**
-* Funció fa moure el robot cap endavant sempre que no s'hagi detectat cap obstacle. En cas de detectar quelcom gira a pertinentment. 
+* Funcio fa moure el robot cap endavant sempre que no s'hagi detectat cap obstacle. En cas de detectar quelcom gira a pertinentment. 
 **/
 void moveObstacle(){
 	int f;
@@ -202,3 +231,84 @@ void moveObstacle(){
 }
 
 
+
+void followWall(){
+	int f;
+	f = obstacleDetected();
+
+	switch(f){
+		case (LEFT):
+			if (closed){
+				moveBackward(2000);
+				turnRight(2000);
+				closed = 0;
+			} else {
+				moveForward(0);
+			}
+			break;
+		case (LEFT_RIGHT):
+			if (closed){
+				moveBackward(0);
+			} else {
+				moveForward(0);
+			}
+			break;
+		case (FRONT):
+		case (RIGHT):
+		case (FRONT_RIGHT):
+			moveForward(1000);
+			turnLeft(1000);
+			moveForward(1000);
+			turnLeft(1000);
+				break;
+		case (NO_OBSTACLE):
+			if (closed){
+				moveBackward(2000);
+				turnRight(2000);
+				closed = 0;
+			} else {
+				moveForward(2000);
+				turnLeft(0);
+			}
+			break;
+		case (LEFT_FRONT):
+			moveForward(1000);
+			turnRight(1000);
+			moveForward(1000);
+			turnRight(1000);
+			break;
+		case (LEFT_FRONT_RIGHT):
+			closed = 1;
+			moveBackward(0);
+			break;
+	}
+
+
+}
+
+
+
+
+void followTheLeftWall(){
+	int f;
+	f = obstacleDetected();
+
+	switch(f){
+		case (NO_OBSTACLE):
+			turnLeft(2000);
+			break;
+		case (FRONT):
+			turnHRight(2000);
+			break;
+		case (RIGHT):
+			moveForward(2000);
+			break;
+		case(FRONT_RIGHT):
+			turnHLeft(2000);
+			break;
+			
+			
+	}
+
+
+}

@@ -1,7 +1,7 @@
 /*
  * Practica4.c
  *
- * PAE Practica 4: CONNEXIÓ AL ROBOT. Creació de les Funcions Bàsiques de Comunicació i d'una Llibreria de Funcions per Controlar el Robot.
+ * PAE Practica 4: CONNEXIO AL ROBOT. Creacio de les Funcions Basiques de Comunicacio i d'una Llibreria de Funcions per Controlar el Robot.
  *
  *  Created on: 31/03/2016
  *      Author: Aina Ferra i Alicia Morales
@@ -16,11 +16,15 @@
 #include "sensor.h"
 #include "motor.h"
 #include "definedValues.h"
+#include "pantalla.h"
+
+
+char corner = 0;
 
 
 
 /**
- * Funció que apaga el led del motor amb l'ID passat com a paràmetre.
+ * Funcio que apaga el led del motor amb l'ID passat com a parametre.
  */
 void ledOFF(byte bID){
 
@@ -49,8 +53,42 @@ void ledON(byte bID){
 
 
 }
+
+void followTheRightWall(){
+	volatile int f, c;
+	c = 0;
+	f = obstacleDetected();
+
+	if(f == ERROR){
+		__no_operation();
+	} else if ((f & 2) == 2){
+		borrar(1);
+		escribir("FRONT", 1);
+		turnHLeft(0);
+	} else if ((f & 4) == 4){
+		borrar(1);
+		escribir("RIGHT", 1);
+		c = closeRight();
+		if (c){
+			borrar(1);
+			escribir("RIGHT CLOSE", 1);
+			turnLeft(300);
+			moveForward(500);
+		}
+		moveForward(0);
+	} else {
+		borrar(1);
+		escribir("ELSE", 1);
+		borrar(2);
+		escribir("No detecto nada", 4);
+		turnRight(300);
+		moveForward(500);
+	}
+	borrar(4);
+
+}
+
 void main(void) {
-	int f;
 	WDTCTL = WDTPW + WDTHOLD;       	// Paramos el watchdog timer
 	
 	/*Inicialitzem tot el necessari*/
@@ -58,6 +96,7 @@ void main(void) {
 	init_UART();
 	init_timer_A1();
 	init_timer_B0();
+	init_LCD();
 	enableInterruptTimerB0();
  	_enable_interrupt();
 
@@ -66,16 +105,18 @@ void main(void) {
 	endLessTurn(); // Settejem les rodes en mode continu
 	__delay_cycles(1000000);
 
+	obstacleDistance(100);
+
 	while(1){
-		// Com a mostra de tot l'implementat a la pràctica executem la funció que fa avançar el robot cap endavant evitant tot obstacle.
-		moveObstacle();
+		// Com a mostra de tot l'implementat a la practica executem la funcio que fa avancar el robot cap endavant evitant tot obstacle.
+		followTheRightWall();
 	}
 
 }
 
 
 /*-------------------------------------------------------------------------
- *                  Rutines d'atenció a la interrupció (ISR)
+ *                  Rutines d'atencio a la interrupcio (ISR)
  * ------------------------------------------------------------------------*/
 
 #pragma vector=USCI_A0_VECTOR

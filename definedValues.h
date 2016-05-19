@@ -25,6 +25,9 @@
 #define P_GOAL_SPEED_L (32)
 #define P_GOAL_SPEED_H (33)
 
+#define LEFT_IR_SENSOR 26
+#define RIGHT_IR_SENSOR 28
+
 //--- Instruction ---
 #define INST_PING 0x01
 #define INST_READ 0x02
@@ -33,19 +36,28 @@
 #define INST_ACTION 0x05
 #define INST_RESET 0x06
 #define INST_SYNC_WRITE 0x83
-#define LEFT 0
-#define FRONT 1
-#define RIGHT 2
-
+#define LEFT 1
+#define FRONT 2
+#define RIGHT 3
+#define NO_OBSTACLE -1
+#define LEFT_FRONT 4
+#define LEFT_RIGHT 5
+#define FRONT_RIGHT 6
+#define LEFT_FRONT_RIGHT 7
+#define ERROR -2
 
 #define TXD0_READY (UCA0IFG & UCTXIFG)
 #define RXD0_READY (UCA0IFG & UCRXIFG)
+
+#define TOOCLOSE 200
+#define TOOCLOSE2 170
 
 
 typedef unsigned char byte;
 typedef struct RxReturn {
 	byte StatusPacket[20];
 	byte error;
+	byte receivedError;
 } RxReturn;
 
 #endif /* DEFINEDVALUES_H_ */

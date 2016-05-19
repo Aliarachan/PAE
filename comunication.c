@@ -10,6 +10,7 @@
 #include <stdlib.h>
 #include "hal_lcd.h"
 #include "definedValues.h"
+#include "init.h"
 
 int timeNow = 0;
 byte receivedByte;
@@ -174,6 +175,8 @@ struct RxReturn RxPacket(void) {
 		if (bChecksum != answer.StatusPacket[bLength- 1]) {
 			answer.error = 2; // Error de checksum
 		}
+
+		answer.receivedError = answer.StatusPacket[4] & 16;
 	}
 
 	return (answer);

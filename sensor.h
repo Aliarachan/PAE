@@ -10,6 +10,13 @@
 
 
 int obstacleDetected(void);
+void obstacleDistance(byte bID);
+int readLeftSensor(byte bID);
+int readRightSensor(byte bID);
+int closeRight();
+int closeLeft();
+void escribir(char String[], unsigned char Linea);
+void borrar(unsigned char Linea);
 
 
 

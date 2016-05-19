@@ -23,7 +23,11 @@ void moveBackward(int time);
 void moveForward(int time);
 void turnRight(int time);
 void turnLeft(int time);
+void turnHRight(int time);
+void turnHLeft(int time);
 void stopMoving();
 void moveObstacle();
+void followWall();
+void followTheLeftWall();
 
 #endif /* MOTOR_H_ */
