@@ -25,7 +25,9 @@
 #define P_GOAL_SPEED_L (32)
 #define P_GOAL_SPEED_H (33)
 
+//--- Sensors ---
 #define LEFT_IR_SENSOR 26
+#define CENTER_IR_SENSOR 27
 #define RIGHT_IR_SENSOR 28
 
 //--- Instruction ---

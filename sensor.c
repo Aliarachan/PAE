@@ -13,12 +13,12 @@
 #include "definedValues.h"
 
 
-
+int minDistance;
 
 
 /**
 * Funció que llegeix el flag del modul sensor indicador de si hi ha obstacle i on es troba.
-* Retorna un enter indicant 
+* Retorna un enter indicant
 * -1 si no hi ha res (el byte rebut acaba en 000),
 * 0 si ha trobat un obstacle a l'esquerra (el byte rebut acaba en 100),
 * 2 si ha trobat un obstacle a la dreta (el byte rebut acaba en 010),
@@ -27,7 +27,7 @@
 *
 **/
 int obstacleDetected(void){
-	struct RxReturn r; // l'estructura que rebrem 
+	struct RxReturn r; // l'estructura que rebrem
 	byte aux = 0; // byte on es guardara el parametre de l'estructura que conte la informacio de si hi ha o no obstacles i on
 	int res = -1; // enter que indica on es l'obstacle, per defecte no n'hi ha cap
 
@@ -158,7 +158,7 @@ int closeRight(){
 	//Si reflexa molta llum, es que l'obstacle esta a prop.
 	//(Sabent que aixo depen del material sobre el que incideix la llum)
 	//Per tant, quant mes alt es el valor, mes aprop esta l'obstacle
-	if (c > TOOCLOSE){
+	if (c > minDistance){
 		escribir("Estoy muy cerca", 3);
 		return 1;
 	}else{
@@ -182,7 +182,7 @@ int closeLeft(){
 	if (c == ERROR){
 		return ERROR;
 	}
-	if (c > 200){
+	if (c > minDistance){
 		escribir("Estoy muy cerca", 3);
 		return 1;
 	}else{
@@ -206,7 +206,7 @@ void obstacleDistance(byte bID){
 
 int playBuzzMelody(void){
 	RxReturn rx; // Paquet de retorn
-	byte bID = 100; 
+	byte bID = 100;
 	byte bInstruction = INST_WRITE; //instruction write
 	byte bParameterLength = 3; // Registre on escriure , BUZZER part baixa , BUZZER part baixa
 	byte gbpParameter[20];
@@ -220,11 +220,47 @@ void setWallKind(void){
 	obstacleDistance(readRightSensor()-50);
 }
 
+/*
+* Funcio que seteja la distancia maxima a la qual podem estar de la pared.
+* Per distancies mes grans que aquesta, el robot no detectara cap obstacle
+*/
+void setMaxDistance(void){
+	int c;
+	//Llegim el valor del sensor
+	c = readRightSensor();
+	//Si ens dona error ho reintentem.
+	//Es poc probable que doni error dos cops seguits.
+	if (c == ERROR){
+			c = readRightSensor();
+			obstacleDistance(c);
+	} else {
+		obstacleDistance(c);
+	}
+}
+
+/*
+* Funcio que seteja la distancia minima a la qual estarem de la pared.
+* El robot voldra recolocarse una mica mes lluny quan estem mes a prop que
+* aquesta distancia.
+*/
+void setMinDistance(void){
+	int c;
+	c = readRightSensor();
+	//Aqui fem el mateix, ho provem dos cops perque es poc
+	//probable que doni error dos cops seguits.
+	if (c == ERROR){
+			c = readRightSensor();
+			minDistance = c;
+	} else {
+		minDistance = c;
+	}
+
+}
 
 
 /**
 * Funció que llegeix el flag del modul sensor indicador de si es supera un umbral de lluminositat.
-* Retorna un enter indicant 
+* Retorna un enter indicant
 * -1 si no hi ha res (el byte rebut acaba en 000),
 * 0 si ha trobat un foc a l'esquerra (el byte rebut acaba en 100),
 * 2 si ha trobat un foc a la dreta (el byte rebut acaba en 010),
@@ -233,7 +269,7 @@ void setWallKind(void){
 *
 **/
 int isFire(void){
-	struct RxReturn r; // l'estructura que rebrem 
+	struct RxReturn r; // l'estructura que rebrem
 	byte aux = 0; // byte on es guardara el parametre de l'estructura que conte la informacio de si hi ha o no obstacles i on
 	int res = -1; // enter que indica on es el foc, per defecte no n'hi ha cap
 
@@ -259,7 +295,7 @@ int isFire(void){
 	}
 
 	aux &= 0x07;
-	
+
 	switch(aux){
 		case (0x01):
 			res = LEFT;
@@ -282,6 +318,6 @@ int isFire(void){
 		case (0x07):
 			res = LEFT_FRONT_RIGHT;
 			break;
-	} 
+	}
 	return res;
 }

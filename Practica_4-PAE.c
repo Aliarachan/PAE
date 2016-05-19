@@ -112,8 +112,10 @@ __interrupt void Port2_ISR(void)
 	P2IE &= 0x3E;   //interrupciones joystick (2.1-2.5) desactivadas
 	switch(P2IFG){
 		case (BUTTONS1):
+				setMaxDistance();
 		break;
 		case (BUTTONS2):
+				setMinDistance();
 		break;
 		case (JOYSTICK_CENTER):
 		break;
