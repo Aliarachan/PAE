@@ -17,6 +17,7 @@
 #include "motor.h"
 #include "definedValues.h"
 #include "pantalla.h"
+#include "extres.h"
 
 
 char corner = 0;

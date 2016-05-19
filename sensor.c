@@ -11,6 +11,7 @@
 #include "hal_lcd.h"
 #include "comunication.h"
 #include "definedValues.h"
+#include "pantalla.h"
 
 
 int minDistance;
@@ -53,30 +54,6 @@ int obstacleDetected(void){
 	}
 
 	aux &= 0x07;
-	/**
-	switch(aux){
-		case (0x01):
-			res = LEFT;
-			break;
-		case (0x02):
-			res = FRONT;
-			break;
-		case (0x04):
-			res = RIGHT;
-			break;
-		case (0x03):
-			res = LEFT_FRONT;
-			break;
-		case (0x05):
-			res = LEFT_RIGHT;
-			break;
-		case (0x06):
-			res = FRONT_RIGHT;
-			break;
-		case (0x07):
-			res = LEFT_FRONT_RIGHT;
-			break;
-	} **/
 	return aux;
 }
 
@@ -204,7 +181,7 @@ void obstacleDistance(byte bID){
 
 }
 
-int playBuzzMelody(void){
+void playBuzzMelody(void){
 	RxReturn rx; // Paquet de retorn
 	byte bID = 100;
 	byte bInstruction = INST_WRITE; //instruction write
