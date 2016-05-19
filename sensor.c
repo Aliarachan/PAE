@@ -13,18 +13,6 @@
 #include "definedValues.h"
 
 
-char borrado[] = "                 ";
-
-
-void escribir(char String[], unsigned char Linea)
-
-{
-	halLcdPrintLine(String, Linea, OVERWRITE_TEXT); //superponemos la nueva palabra introducida, haya o no algo.
-}
-
-void borrar(unsigned char Linea) {
-	halLcdPrintLine(borrado, Linea, OVERWRITE_TEXT); //incluimos una linea en blanco
-}
 
 
 
@@ -117,7 +105,7 @@ int readLeftSensor(byte bID){
 
 	//Retornem el valor que hem llegit
 	//Nomes arribem aqui si no hi ha un error
-	//Es troba a la posicio 5, la seg�ent despr�s de la trama
+	//Es troba a la posicio 5, la seguent despres de la trama
 	//que ja coneixem
 	return r.StatusPacket[5];
 }
@@ -232,7 +220,68 @@ void setWallKind(void){
 	obstacleDistance(readRightSensor()-50);
 }
 
-char clapWaiting(void){
-	
-}
 
+
+/**
+* Funció que llegeix el flag del modul sensor indicador de si es supera un umbral de lluminositat.
+* Retorna un enter indicant 
+* -1 si no hi ha res (el byte rebut acaba en 000),
+* 0 si ha trobat un foc a l'esquerra (el byte rebut acaba en 100),
+* 2 si ha trobat un foc a la dreta (el byte rebut acaba en 010),
+* 1 si ha trobat un foc a front (el byte rebut acaba en 100),
+* 4 si s'ha rebut un error en el packet.
+*
+**/
+int isFire(void){
+	struct RxReturn r; // l'estructura que rebrem 
+	byte aux = 0; // byte on es guardara el parametre de l'estructura que conte la informacio de si hi ha o no obstacles i on
+	int res = -1; // enter que indica on es el foc, per defecte no n'hi ha cap
+
+	byte bID = 100; // l'ID del sensor
+	byte bInstruction = INST_READ; // volem llegir el flag d'obstacle
+	byte bParameterLength = 2; // Registre a llegir + longitud de les dades
+	byte gbpParameter[20];
+	gbpParameter[0] = 0X21; // Luminosity detector reg direction
+	gbpParameter[1] = 0x01; //length
+	TxPacket(bID, bParameterLength, gbpParameter, bInstruction);
+	r = RxPacket(); // Paquet retornat
+
+	// ERROR HANDLEING
+	if((r.StatusPacket[4] & 16) || (r.error)){
+		res = -2; // s'ha trobat un error en el packet
+		return res;
+	}
+
+	aux = r.StatusPacket[5]; // dada del paquet que conté la informació de si hi ha foc i on
+	//Si les ultimes posicions son 0, llavors es que no ha trobat res
+	if(!aux){ // Obscuritat
+		res =-4;
+	}
+
+	aux &= 0x07;
+	
+	switch(aux){
+		case (0x01):
+			res = LEFT;
+			break;
+		case (0x02):
+			res = FRONT;
+			break;
+		case (0x04):
+			res = RIGHT;
+			break;
+		case (0x03):
+			res = LEFT_FRONT;
+			break;
+		case (0x05):
+			res = LEFT_RIGHT;
+			break;
+		case (0x06):
+			res = FRONT_RIGHT;
+			break;
+		case (0x07):
+			res = LEFT_FRONT_RIGHT;
+			break;
+	} 
+	return res;
+}
