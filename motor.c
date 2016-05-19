@@ -49,8 +49,8 @@ void endLessTurn(void){
 	byte gbpParameter[20];
 	//The wheel mode can be used to wheel-type operation robots since motors of the robots spin infinitely.
 	gbpParameter[0] = P_CW_ANGLE_LIMIT_L;
-	gbpParameter[1] = 0; // Dada a escruiure a P_CW_ANGLE_LIMIT_L 
-	gbpParameter[2] = 0; // Dada a escruiure a P_CW_ANGLE_LIMIT_H 
+	gbpParameter[1] = 0; // Dada a escruiure a P_CW_ANGLE_LIMIT_L
+	gbpParameter[2] = 0; // Dada a escruiure a P_CW_ANGLE_LIMIT_H
 	gbpParameter[3] = 0; // Dada a escriure a  P_CW_ANGLE_LIMIT_L
 	gbpParameter[4] = 0; // Dada a escriure a  P_CCW_ANGLE_LIMIT_H
 	TxPacket(bID, bParameterLength, gbpParameter, bInstruction);
@@ -62,7 +62,7 @@ void endLessTurn(void){
 /**
 * Funció NO ACABADA que configura la velocitat dels motors per tal de que el robot es mogui cap a endavant.
 * Demana per escriure la velocitat corresponent als registres de configuracio de la velocitat a cadascun del moduls Dynamixel motor.
-* En comptes d'enviar a cada motor individualment es preten escriure a tots a la vegada per tal de que es comencin a moure simultaneament. 
+* En comptes d'enviar a cada motor individualment es preten escriure a tots a la vegada per tal de que es comencin a moure simultaneament.
 **/
 void walk(void){
 	byte bID = BROADCASTING_ID; // a mes d'un actuador
@@ -85,7 +85,7 @@ void walk(void){
 /**
 * Funció NO ACABADA que configura la velocitat dels motors per tal de que el robot s'aturi.
 * Demana per escriure velocitat 0 als registres de configuraci� de la velocitat a cadascun del moduls Dynamixel motor.
-* En comptes d'enviar a cada motor individualment es preten escriure a tots a la vegada per tal de que s'aturin simultaneament. 
+* En comptes d'enviar a cada motor individualment es preten escriure a tots a la vegada per tal de que s'aturin simultaneament.
 **/
 void quiet(void){
 	byte bID = BROADCASTING_ID; // a m�s d'un actuador
@@ -208,7 +208,7 @@ void stopMoving(){
 }
 
 /**
-* Funcio fa moure el robot cap endavant sempre que no s'hagi detectat cap obstacle. En cas de detectar quelcom gira a pertinentment. 
+* Funcio fa moure el robot cap endavant sempre que no s'hagi detectat cap obstacle. En cas de detectar quelcom gira a pertinentment.
 **/
 void moveObstacle(){
 	int f;
@@ -230,84 +230,38 @@ void moveObstacle(){
 
 }
 
+/*---------------------------------------------------------
+								Funcions per als leds
+----------------------------------------------------------*/
+	/**
+	 * Funcio que apaga el led del motor amb l'ID passat com a parametre.
+	 */
+	void ledOFF(byte bID){
+
+		byte bInstruction = INST_WRITE; //instruction write
+		byte bParameterLength = 2; // Adreca inicial + Data-encendre-led(1)
+		byte gbpParameter[20];
+		gbpParameter[0] = P_LED;
+		gbpParameter[1] = 0; //OFF
+
+		TxPacket(bID, bParameterLength, gbpParameter, bInstruction);
+		RxPacket();
 
 
-void followWall(){
-	int f;
-	f = obstacleDetected();
-
-	switch(f){
-		case (LEFT):
-			if (closed){
-				moveBackward(2000);
-				turnRight(2000);
-				closed = 0;
-			} else {
-				moveForward(0);
-			}
-			break;
-		case (LEFT_RIGHT):
-			if (closed){
-				moveBackward(0);
-			} else {
-				moveForward(0);
-			}
-			break;
-		case (FRONT):
-		case (RIGHT):
-		case (FRONT_RIGHT):
-			moveForward(1000);
-			turnLeft(1000);
-			moveForward(1000);
-			turnLeft(1000);
-				break;
-		case (NO_OBSTACLE):
-			if (closed){
-				moveBackward(2000);
-				turnRight(2000);
-				closed = 0;
-			} else {
-				moveForward(2000);
-				turnLeft(0);
-			}
-			break;
-		case (LEFT_FRONT):
-			moveForward(1000);
-			turnRight(1000);
-			moveForward(1000);
-			turnRight(1000);
-			break;
-		case (LEFT_FRONT_RIGHT):
-			closed = 1;
-			moveBackward(0);
-			break;
 	}
 
+	void ledON(byte bID){
 
-}
+		byte bInstruction = INST_WRITE; //instruction write
+		byte bParameterLength = 2; // Adreca inicial + Data-encendre-led(1)
+		byte gbpParameter[20];
+		gbpParameter[0] = P_LED;
+		gbpParameter[1] = 1;
+
+		TxPacket(bID, bParameterLength, gbpParameter, bInstruction);
+		RxPacket();
 
 
-
-
-void followTheLeftWall(){
-	int f;
-	f = obstacleDetected();
-
-	switch(f){
-		case (NO_OBSTACLE):
-			turnLeft(2000);
-			break;
-		case (FRONT):
-			turnHRight(2000);
-			break;
-		case (RIGHT):
-			moveForward(2000);
-			break;
-		case(FRONT_RIGHT):
-			turnHLeft(2000);
-			break;
-			
-			
 	}
 
 

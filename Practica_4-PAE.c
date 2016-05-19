@@ -22,38 +22,6 @@
 char corner = 0;
 
 
-
-/**
- * Funcio que apaga el led del motor amb l'ID passat com a parametre.
- */
-void ledOFF(byte bID){
-
-	byte bInstruction = INST_WRITE; //instruction write
-	byte bParameterLength = 2; // Adreca inicial + Data-encendre-led(1)
-	byte gbpParameter[20];
-	gbpParameter[0] = P_LED;
-	gbpParameter[1] = 0; //OFF
-
-	TxPacket(bID, bParameterLength, gbpParameter, bInstruction);
-	RxPacket();
-
-
-}
-
-void ledON(byte bID){
-
-	byte bInstruction = INST_WRITE; //instruction write
-	byte bParameterLength = 2; // Adreca inicial + Data-encendre-led(1)
-	byte gbpParameter[20];
-	gbpParameter[0] = P_LED;
-	gbpParameter[1] = 1;
-
-	TxPacket(bID, bParameterLength, gbpParameter, bInstruction);
-	RxPacket();
-
-
-}
-
 void followTheRightWall(){
 	volatile int f, c;
 	c = 0;
@@ -90,7 +58,7 @@ void followTheRightWall(){
 
 void main(void) {
 	WDTCTL = WDTPW + WDTHOLD;       	// Paramos el watchdog timer
-	
+
 	/*Inicialitzem tot el necessari*/
 	init_UCS();
 	init_UART();
@@ -136,4 +104,3 @@ __interrupt void timerA1_ISR(void) {
 __interrupt void timerB0_ISR(void) {
 	timeMove += 1;
 }
-
