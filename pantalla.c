@@ -1,6 +1,12 @@
 
 /** Libreria de funciones de pantalla y menu. **/
-
+#include <msp430x54xA.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include "hal_lcd.h"
+#include "comunication.h"
+#include "definedValues.h"
+#include "pantalla.h"
 
 char cadena[17];
 unsigned char contraste = 0x64;
@@ -41,18 +47,18 @@ void borrar(unsigned char Linea) {
 }
 
 
-void pintaMenu( byte linea, byte eleccion_menu)
-{
-    char *lista_menu[] = {"Modo_Testespacioscomocolumnas", "Modo_Pared"};
-    int numOpciones = 2;
-    byte opcion;
-    halLCDPrintLine("  ROBOT PAE   ", linea++, OVERWRITE_TEXT);
-    for(int opcion = 1, opcion < numOpciones, opcion++){
-        if(eleccion == opcionMenu)
-        {
-            halLCDPrintLine(lista_menu[opcion-1], INVERT_TEXT | OVERWRITE_TEXT);
-            
-        }
-        else halLCDPrintLine(lista_menu[opcion-1], linea++, OVERWRITE_TEXT);
-    }   
-}
+//void pintaMenu( byte linea, byte eleccion_menu)
+//{
+//    char *lista_menu[] = {"Modo_Testespacioscomocolumnas", "Modo_Pared"};
+//    int numOpciones = 2;
+//    byte opcion;
+//    halLCDPrintLine("  ROBOT PAE   ", linea++, OVERWRITE_TEXT);
+//    for(int opcion = 1, opcion < numOpciones, opcion++){
+//        if(eleccion == opcionMenu)
+//        {
+//            halLCDPrintLine(lista_menu[opcion-1], INVERT_TEXT | OVERWRITE_TEXT);
+//
+//        }
+//        else halLCDPrintLine(lista_menu[opcion-1], linea++, OVERWRITE_TEXT);
+//    }
+//}

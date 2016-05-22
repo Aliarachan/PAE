@@ -19,7 +19,6 @@ void setMaxDistance(void);
 void setMinDistance(void);
 int isFire(void);
 void playBuzzMelody(void);
-
-
+void playNyanMelody(int position);
 
 #endif /* SENSOR_H_ */

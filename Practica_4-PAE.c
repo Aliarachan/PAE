@@ -21,7 +21,7 @@
 
 
 char corner = 0;
-
+int currIndexMelody = 0;
 
 void followTheRightWall(){
 	volatile int f, c;
@@ -79,6 +79,11 @@ void main(void) {
 	while(1){
 		// Com a mostra de tot l'implementat a la practica executem la funcio que fa avancar el robot cap endavant evitant tot obstacle.
 		followTheRightWall();
+		playNyanMelody(currIndexMelody++);
+		if(currIndexMelody > 454)
+		{
+			currIndexMelody = 0;
+		}
 	}
 
 }

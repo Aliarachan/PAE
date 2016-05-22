@@ -1,0 +1,7 @@
+Debug/
+*.o
+.xdchelp
+.vscode/
+config/
+launches/
+settings/
