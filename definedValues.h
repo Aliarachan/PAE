@@ -48,6 +48,12 @@
 #define LEFT_FRONT_RIGHT 7
 #define ERROR -2
 
+
+//---- Wall values
+#define RIGHT_WALL 1
+#define LEFT_WALL 2
+
+
 //--- Botons i joystick ---
 #define BUTTONS1 0x40
 #define BUTTONS2 0x80

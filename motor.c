@@ -12,6 +12,7 @@
 #include "comunication.h"
 #include "definedValues.h"
 #include "sensor.h"
+#include "extres.h"
 
 int timeMove = 0; // Variable comptador del temps que s'ha estat movent el robot cap a una determinada direccio.
 char closed = 0;
@@ -131,6 +132,7 @@ void moveForward(int time){
 	moveWheel(2, 0xFF, 0x04);
 	moveWheel(3, 0xFF, 0x00);
 	moveWheel(4, 0xFF, 0x00);
+	lightCenterLeds();
 	if (time != 0){
 		timeMove = 0;
 		while (timeMove <= time);
@@ -147,6 +149,7 @@ void turnRight(int time){
 	moveWheel(2, 0xFF, 0x00);
 	moveWheel(3, 0xFF, 0x00); // Rodes de l'esquerra cap endarrera
 	moveWheel(4, 0xFF, 0x00);
+	lightRightLeds();
 	if (time != 0){
 		timeMove = 0;
 		while (timeMove <= time);
@@ -162,6 +165,7 @@ void turnLeft(int time){
 	moveWheel(2, 0xFF, 0x04);
 	moveWheel(3, 0xFF, 0x04);
 	moveWheel(4, 0xFF, 0x04);
+	lightLeftLeds();
 	if (time != 0){
 		timeMove = 0;
 		while (timeMove <= time);
@@ -176,6 +180,7 @@ void turnHRight(int time){
 	moveWheel(2, 0x00, 0x00);
 	moveWheel(3, 0xFF, 0x03);
 	moveWheel(4, 0xFF, 0x03);
+	lightRightLeds();
 	if (time != 0){
 		timeMove = 0;
 		while (timeMove <= time);
@@ -191,6 +196,7 @@ void turnHLeft(int time){
 	moveWheel(2, 0xFF, 0x07);
 	moveWheel(4, 0x00, 0x00);
 	moveWheel(3, 0x00, 0x00);
+	lightLeftLeds();
 	if (time != 0){
 		timeMove = 0;
 		while (timeMove <= time);
