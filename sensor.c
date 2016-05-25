@@ -202,16 +202,12 @@ int closeRight(){
 	if (c == ERROR){
 		return ERROR;
 	}
-
-	sprintf(cadena, "Valor: %d", c);
-	escribir(cadena, 2);
 	//El valor que llegim es la reflexo de la llum sobre l'obstacle.
 	//Si no es reflexa llum, llavors es que no hi ha obstacle.
 	//Si reflexa molta llum, es que l'obstacle esta a prop.
 	//(Sabent que aixo depen del material sobre el que incideix la llum)
 	//Per tant, quant mes alt es el valor, mes aprop esta l'obstacle
 	if (c > minDistance){
-		escribir("Estoy muy cerca", 3);
 		return 1;
 	}else{
 		return 0;
@@ -227,15 +223,10 @@ int closeLeft(){
 	int c;
 	char cadena[17];
 	c = readLeftSensor(100);
-
-	sprintf(cadena, "Valor: %d", c);
-	borrar(2);
-	escribir(cadena, 2);
 	if (c == ERROR){
 		return ERROR;
 	}
 	if (c > minDistance){
-		escribir("Estoy muy cerca", 3);
 		return 1;
 	}else{
 		return 0;
@@ -323,13 +314,9 @@ void setMinDistance(void){
 
 /**
 * Funció que llegeix el flag del modul sensor indicador de si es supera un umbral de lluminositat.
-* Retorna un enter indicant
-* -1 si no hi ha res (el byte rebut acaba en 000),
-* 0 si ha trobat un foc a l'esquerra (el byte rebut acaba en 100),
-* 2 si ha trobat un foc a la dreta (el byte rebut acaba en 010),
-* 1 si ha trobat un foc a front (el byte rebut acaba en 100),
-* 4 si s'ha rebut un error en el packet.
-*
+* Retorna un enter indicant si hem passat el llindar.
+* Tractem el cas de que hi hagi un error.
+* En cas contrari, nomes volem saber si ha detectat foc en algun sensor. Ens es igual on.
 **/
 int isFire(void){
 	struct RxReturn r; // l'estructura que rebrem
@@ -350,38 +337,7 @@ int isFire(void){
 		return ERROR;
 	}
 
-	aux = r.StatusPacket[5]; // dada del paquet que conté la informació de si hi ha foc i on
-	//Si les ultimes posicions son 0, llavors es que no ha trobat res
-	if(!aux){ // Obscuritat
-		res =-4;
-	}
-
-	aux &= 0x07;
-
-	switch(aux){
-		case (0x01):
-			res = LEFT;
-			break;
-		case (0x02):
-			res = FRONT;
-			break;
-		case (0x04):
-			res = RIGHT;
-			break;
-		case (0x03):
-			res = LEFT_FRONT;
-			break;
-		case (0x05):
-			res = LEFT_RIGHT;
-			break;
-		case (0x06):
-			res = FRONT_RIGHT;
-			break;
-		case (0x07):
-			res = LEFT_FRONT_RIGHT;
-			break;
-	}
-	return res;
+	 return r.StatusPacket[5]; // dada del paquet que conté la informació de si hi ha foc i on
 }
 
 char clapCount(void){
