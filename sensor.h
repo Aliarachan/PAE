@@ -20,5 +20,6 @@ void setMinDistance(void);
 int isFire(void);
 void playBuzzMelody(void);
 void playNyanMelody(int position);
+char clapCount(void);
 
 #endif /* SENSOR_H_ */

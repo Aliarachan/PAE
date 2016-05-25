@@ -1,11 +1,10 @@
 /*
- * Practica4.c
- *
- * PAE Practica 4: CONNEXIO AL ROBOT. Creacio de les Funcions Basiques de Comunicacio i d'una Llibreria de Funcions per Controlar el Robot.
- *
- *  Created on: 31/03/2016
- *      Author: Aina Ferra i Alicia Morales
- */
+* ---------------------------------PROJECTE FINAL PAE
+* Programacio d'un robot que busca i segueix una pared.
+* Extres: es comenca a moure quan sent dues palmades, s'atura amb una llum molt intensa,
+* encen els leds segons la direccio en la que es mou, fa sonar una melodia.
+*
+*/
 
 #include <msp430x54xA.h>
 #include <stdio.h>
@@ -122,6 +121,13 @@ void main(void) {
 	WDTCTL = WDTPW + WDTHOLD;       	// Paramos el watchdog timer
 
 	/*Inicialitzem tot el necessari*/
+	/*
+	* Necessitem UCS i UART per les comunicacions.
+	* Timer A1 i timer B0 per les interrupcions de timer.
+	* La pantalla per poder ensenyar missatges.
+	* Els botons que usem per cal.librar les distancies.
+	* Els LEDS que tambe volem encendre.
+	*/
 	init_UCS();
 	init_UART();
 	init_timer_A1();
@@ -129,6 +135,12 @@ void main(void) {
 	init_LCD();
 	init_botons();
 	config_P4_LEDS();
+
+	/*
+	* Habilitem les interrupcions un cop hem fet totes les inicialitzacions.
+	* Aixi evitem que es configuri alguna cosa malament per culpa d'una
+	* interrupcio.
+	*/
 	enableInterruptTimerB0();
  	_enable_interrupt();
 
@@ -219,17 +231,26 @@ __interrupt void USCI_A0_ISR(void) { //interrupcion de recepcion en la uart A0
 	UCA0IE |= UCRXIE; //Interrupciones reactivadas en RX
 }
 
+/*
+* El timer A1 ens controla el timeOut de les comunicacions.
+*/
 #pragma vector=TIMER1_A0_VECTOR
 __interrupt void timerA1_ISR(void) {
 	timeNow += 1;
 }
 
+/*
+* El timer B0 ens serveix per fer funcions com la de delay.
+*/
 #pragma vector=TIMERB0_VECTOR
 __interrupt void timerB0_ISR(void) {
 	timeMove += 1;
 }
 
-#pragma vector=PORT2_VECTOR  //interrupción de los botones. Actualiza el valor de la variable global estado.
+/*
+* Usem els botons per poder cal.librar la distancia maxima i minima.
+*/
+#pragma vector=PORT2_VECTOR
 __interrupt void Port2_ISR(void)
 {
 	P2IE &= 0xC0; 	//interrupciones botones S1 y S2 (P2.6 y P2.7) desactivadas

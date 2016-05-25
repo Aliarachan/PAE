@@ -29,6 +29,7 @@
 #define LEFT_IR_SENSOR 26
 #define CENTER_IR_SENSOR 27
 #define RIGHT_IR_SENSOR 28
+#define CLAP_COUNTER 0x25
 
 //--- Instruction ---
 #define INST_PING 0x01

@@ -15,7 +15,7 @@
 #include "pitches.h"
 
 //notes in the melody:
-const int melody[459] = {
+const char melody[459] = {
   NOTE_DS5, NOTE_E5, NOTE_FS5, 0, NOTE_B5, NOTE_E5, NOTE_DS5, NOTE_E5, NOTE_FS5, NOTE_B5, NOTE_DS6, NOTE_E6, NOTE_DS6, NOTE_AS5, NOTE_B5, 0,
   NOTE_FS5, 0, NOTE_DS5, NOTE_E5, NOTE_FS5, 0, NOTE_B5, NOTE_CS6, NOTE_AS5, NOTE_B5, NOTE_CS6, NOTE_E6, NOTE_DS6, NOTE_E6, NOTE_CS6,
   NOTE_FS4, NOTE_GS4, NOTE_D4, NOTE_DS4, NOTE_FS2, NOTE_CS4, NOTE_D4, NOTE_CS4, NOTE_B3, NOTE_B3, NOTE_CS4,
@@ -347,8 +347,7 @@ int isFire(void){
 
 	// ERROR HANDLEING
 	if((r.StatusPacket[4] & 16) || (r.error)){
-		res = -2; // s'ha trobat un error en el packet
-		return res;
+		return ERROR;
 	}
 
 	aux = r.StatusPacket[5]; // dada del paquet que conté la informació de si hi ha foc i on
@@ -383,4 +382,25 @@ int isFire(void){
 			break;
 	}
 	return res;
+}
+
+char clapCount(void){
+  struct RxReturn r; // l'estructura que rebrem
+	byte aux = 0;
+
+	byte bID = 100; // l'ID del sensor
+	byte bInstruction = INST_READ; //Volem llegir quants sons forts s'han sentit
+	byte bParameterLength = 2; // Registre a llegir + longitud de les dades
+	byte gbpParameter[20];
+	gbpParameter[0] = CLAP_COUNTER; //Llegim la direccio de mem corresponent al comptador de sons.
+	gbpParameter[1] = 0x01; //Nomes llegim un valor.
+	TxPacket(bID, bParameterLength, gbpParameter, bInstruction);
+	r = RxPacket(); // Paquet retornat
+
+  if((r.StatusPacket[4] & 16) || (r.error)){
+    return ERROR;
+  }
+
+  //Retornem el comptador que tingui
+  return r.StatusPacket[5];
 }
